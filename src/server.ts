@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import path from "node:path";
+import bcrypt from "bcrypt";
 import express, { NextFunction, Request, Response } from "express";
 import { Database } from "sqlite";
 import { initDb } from "./db";
@@ -144,11 +145,13 @@ async function bootstrap(): Promise<void> {
     const senha = normalizarTexto(req.body.senha);
 
     const row = await db.get<Record<string, unknown>>(
-      `SELECT id, nome, email, senha, perfil FROM users WHERE lower(email) = ? AND senha = ?`,
-      [email, senha],
+      `SELECT id, nome, email, senha, perfil FROM users WHERE lower(email) = ?`,
+      [email],
     );
 
-    if (!row) {
+    const senhaValida = row ? await bcrypt.compare(senha, String(row.senha)) : false;
+
+    if (!row || !senhaValida) {
       res.status(401).json({ erro: "Credenciais invalidas." });
       return;
     }

@@ -1,6 +1,18 @@
 # Sistema de Chamados (Help Desk)
 
-Projeto de Help Desk com TypeScript no backend e frontend.
+Projeto de Help Desk com TypeScript no backend e frontend, autenticação por perfis e persistência em SQLite.
+
+## Visao Geral
+
+Este projeto simula um fluxo real de suporte interno de TI: um usuário abre um chamado, acompanha o status e uma equipe técnica pode visualizar, priorizar e concluir o atendimento.
+
+Ele foi construído para demonstrar fundamentos importantes de backend e frontend em um contexto de portfólio:
+
+- autenticação com sessão
+- autorização por perfil (RBAC)
+- persistência com SQLite
+- API REST com validações
+- frontend em TypeScript consumindo a API
 
 ## Funcionalidades
 
@@ -10,6 +22,25 @@ Projeto de Help Desk com TypeScript no backend e frontend.
 - Listar chamados
 - Marcar chamado como resolvido
 - Prioridade: alta, media e baixa
+
+## Diferenciais Tecnicos
+
+- Backend em TypeScript com Express
+- Frontend em TypeScript compilado com esbuild
+- Banco SQLite com criação automática das tabelas
+- Sessões persistidas no banco
+- Senhas protegidas com hash bcrypt
+- Código comentado em pontos importantes para estudo
+
+## Screenshots
+
+### Tela de login e perfis
+
+![Tela de login](docs/screenshots/login-view.svg)
+
+### Painel de chamados
+
+![Painel de chamados](docs/screenshots/dashboard-view.svg)
 
 ## Tecnologias
 
@@ -115,12 +146,28 @@ Exemplo:
 ## Observacoes
 
 - Os dados ficam persistidos em `data/helpdesk.sqlite`.
-- Senhas e sessoes sao apenas para demonstracao local (sem hash nesta versao).
+- As senhas demo sao armazenadas com hash bcrypt no banco.
+- O projeto foi pensado para estudo e portfólio, então prioriza clareza de arquitetura e facilidade de execução local.
 
-## Como explicar no GitHub e em entrevista
+## Como Explicar o Projeto
+
+### Resumo curto para recrutador
+
+"Desenvolvi um sistema de chamados com Node.js, TypeScript e SQLite. Implementei autenticação com sessão, autorização por perfil, persistência de chamados e frontend integrado consumindo uma API REST. Também apliquei hash de senha com bcrypt e organizei o projeto para rodar localmente com setup simples."
+
+### Explicacao tecnica em etapas
 
 1. O backend inicia criando as tabelas automaticamente no SQLite (`users`, `sessions`, `tickets`).
-2. Existe um seed de usuarios demo para facilitar testes locais.
-3. O login gera token e salva em `sessions`; cada request protegida valida o token.
-4. A regra de perfis (RBAC) controla quem pode apenas visualizar e quem pode resolver chamados.
-5. Os chamados sao persistidos no banco, entao o sistema nao perde dados ao reiniciar.
+2. Existe um seed de usuários demo para facilitar testes locais e apresentação do sistema.
+3. O login valida a senha com bcrypt, gera um token e salva a sessão no banco.
+4. Cada rota protegida lê o token e recupera o usuário autenticado.
+5. A regra de perfis controla o que cada usuário pode fazer no sistema.
+6. Os chamados ficam persistidos no banco, então o projeto mantém histórico mesmo após reiniciar o servidor.
+
+### O que este projeto demonstra
+
+- modelagem básica de banco relacional
+- API REST com regras de negócio
+- autenticação e autorização
+- integração full stack
+- preocupação com segurança básica

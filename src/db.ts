@@ -1,9 +1,41 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import bcrypt from "bcrypt";
 import sqlite3 from "sqlite3";
 import { Database, open } from "sqlite";
 
 const DB_PATH = path.join(process.cwd(), "data", "helpdesk.sqlite");
+const SALT_ROUNDS = 10;
+
+const demoUsers = [
+  { nome: "Administrador", email: "admin@helpdesk.local", senha: "123456", perfil: "admin" },
+  { nome: "Tecnico Suporte", email: "tecnico@helpdesk.local", senha: "123456", perfil: "tecnico" },
+  { nome: "Usuario Padrao", email: "usuario@helpdesk.local", senha: "123456", perfil: "usuario" },
+] as const;
+
+async function garantirUsuariosDemo(db: Database): Promise<void> {
+  for (const user of demoUsers) {
+    const existente = await db.get<{ id: number; senha: string }>(
+      `SELECT id, senha FROM users WHERE email = ?`,
+      [user.email],
+    );
+
+    const senhaHash = await bcrypt.hash(user.senha, SALT_ROUNDS);
+
+    if (!existente) {
+      await db.run(
+        `INSERT INTO users (nome, email, senha, perfil) VALUES (?, ?, ?, ?)`,
+        [user.nome, user.email, senhaHash, user.perfil],
+      );
+      continue;
+    }
+
+    // Migração automática: converte senha legada em texto puro para hash bcrypt.
+    if (!existente.senha.startsWith("$2")) {
+      await db.run(`UPDATE users SET senha = ?, perfil = ?, nome = ? WHERE id = ?`, [senhaHash, user.perfil, user.nome, existente.id]);
+    }
+  }
+}
 
 export async function initDb(): Promise<Database> {
   await fs.mkdir(path.dirname(DB_PATH), { recursive: true });
@@ -49,23 +81,7 @@ export async function initDb(): Promise<Database> {
   `);
 
   // Seed básico para facilitar testes locais e apresentação do projeto.
-  await db.run(
-    `INSERT OR IGNORE INTO users (nome, email, senha, perfil) VALUES (?, ?, ?, ?), (?, ?, ?, ?), (?, ?, ?, ?)`,
-    [
-      "Administrador",
-      "admin@helpdesk.local",
-      "123456",
-      "admin",
-      "Tecnico Suporte",
-      "tecnico@helpdesk.local",
-      "123456",
-      "tecnico",
-      "Usuario Padrao",
-      "usuario@helpdesk.local",
-      "123456",
-      "usuario",
-    ],
-  );
+  await garantirUsuariosDemo(db);
 
   return db;
 }
