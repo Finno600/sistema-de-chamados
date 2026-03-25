@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Chamados</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero">
+        <p class="chip">Help Desk Interno</p>
+        <h1>Sistema de Chamados</h1>
+        <p>
+          Registre problemas rapidamente e acompanhe o status de resolucao por prioridade.
+        </p>
+        <div class="demo-credentials">
+          <span>admin@helpdesk.local / 123456</span>
+          <span>tecnico@helpdesk.local / 123456</span>
+          <span>usuario@helpdesk.local / 123456</span>
+        </div>
+      </section>
+
+      <section class="grid">
+        <article class="panel">
+          <div class="heading-row">
+            <h2>Login</h2>
+            <button id="logoutButton" class="ghost hidden" type="button">Sair</button>
+          </div>
+
+          <form id="loginForm" class="stack">
+            <label>
+              E-mail
+              <input id="email" name="email" placeholder="seu-email@empresa.com" required />
+            </label>
+
+            <label>
+              Senha
+              <input id="senha" name="senha" type="password" required />
+            </label>
+
+            <button id="loginButton" type="submit">Entrar</button>
+          </form>
+
+          <div id="userInfo" class="user-info hidden">
+            <span id="userName"></span>
+            <span id="userProfile" class="profile-chip"></span>
+          </div>
+          <p id="authMessage" class="message" aria-live="polite"></p>
+        </article>
+
+        <article class="panel">
+          <h2>Abrir Chamado</h2>
+          <form id="ticketForm" class="stack">
+            <label>
+              Titulo
+              <input
+                id="titulo"
+                name="titulo"
+                placeholder="Ex.: Meu PC nao liga"
+                maxlength="80"
+                required
+              />
+            </label>
+
+            <label>
+              Descricao
+              <textarea
+                id="descricao"
+                name="descricao"
+                rows="4"
+                placeholder="Detalhe o problema..."
+                required
+              ></textarea>
+            </label>
+
+            <label>
+              Prioridade
+              <select id="prioridade" name="prioridade" required>
+                <option value="alta">Alta</option>
+                <option value="media" selected>Media</option>
+                <option value="baixa">Baixa</option>
+              </select>
+            </label>
+
+            <button type="submit">Criar Chamado</button>
+          </form>
+          <p id="formMessage" class="message" aria-live="polite"></p>
+        </article>
+
+        <article class="panel panel-wide">
+          <div class="heading-row">
+            <h2>Chamados</h2>
+            <select id="statusFilter" aria-label="Filtro de status">
+              <option value="">Todos</option>
+              <option value="aberto" selected>Abertos</option>
+              <option value="resolvido">Resolvidos</option>
+            </select>
+          </div>
+          <ul id="ticketList" class="ticket-list"></ul>
+          <p id="emptyState" class="message hidden">Nenhum chamado encontrado.</p>
+        </article>
+      </section>
+    </main>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

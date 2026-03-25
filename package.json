@@ -1,0 +1,27 @@
+{
+  "name": "sistema-de-chamados",
+  "version": "1.0.0",
+  "main": "dist/server.js",
+  "scripts": {
+    "build:frontend": "esbuild public/app.ts --bundle --format=esm --outfile=public/app.js",
+    "build": "npm run build:frontend && tsc -p tsconfig.json",
+    "start": "npm run build && node dist/server.js",
+    "dev": "npm run build:frontend && tsx watch src/server.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^5.2.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.5.0",
+    "esbuild": "^0.27.4",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  }
+}
